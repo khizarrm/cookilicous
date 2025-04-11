@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-pink: #ff69b4;
+  --brand-dark-pink: #c9356b;
+  --brand-burgundy: #8e2249;
+  --background: #fff5f9;
+  --foreground: #333333;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-quicksand;
+  }
+}
+
+@font-face {
+  font-family: "Cookie";
+  src: url("https://fonts.googleapis.com/css2?family=Cookie&display=swap");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-cookie {
+  font-family: "Cookie", cursive;
+}
+
+.font-quicksand {
+  font-family: "Quicksand", sans-serif;
+}
+
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.section-appear {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section-appear.appear {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--brand-burgundy);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sweet-love {
+  font-family: "Cookie", cursive;
+  color: var(--brand-pink);
+  font-size: 4rem;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .sweet-love {
+    font-size: 3rem;
+  }
+}
+
