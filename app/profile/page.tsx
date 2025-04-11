@@ -39,19 +39,25 @@ export default function ProfilePage() {
         .from("profiles")
         .select("full_name, phone_number, address(*)")
         .eq("id", user.id)
-        .single()
+        .maybeSingle()
 
-      if (profileError) {
-        setError(profileError.message)
-      } else {
-        setName(profile.full_name || "")
-        setPhone(profile.phone_number || "")
-        if (profile.address) {
-          setAddress(profile.address.address_text || "")
-          setCity(profile.address.city || "")
-          setZip(profile.address.zip_code || "")
+
+        if (profileError) {
+          setError(profileError.message)
+        } else if (profile) {
+          setName(profile.full_name || "")
+          setPhone(profile.phone_number || "")
+          const addressEntry = Array.isArray(profile.address) ? profile.address[0] : profile.address
+          if (addressEntry) {
+            setAddress(addressEntry.address_text || "")
+            setCity(addressEntry.city || "")
+            setZip(addressEntry.zip_code || "")
+          }
+
+        } else {
+          setError("No profile found for this user.")
         }
-      }
+        
 
       setLoading(false)
     }
@@ -92,6 +98,27 @@ export default function ProfilePage() {
 
   return (
     <main className="max-w-lg mx-auto p-6">
+      <div className="flex justify-between items-center mb-4">
+      <Button
+        variant="outline"
+        onClick={() => router.push("/")}
+        className="text-sm"
+      >
+        ← Back to Home
+      </Button>
+
+      <Button
+        variant="destructive"
+        onClick={async () => {
+          await supabase.auth.signOut()
+          router.push("/login")
+        }}
+        className="text-sm"
+      >
+        Logout
+      </Button>
+    </div>
+
       <h1 className="text-2xl font-bold mb-4 text-center">Your Profile</h1>
 
       {error && <p className="text-red-600 text-sm mb-2">{error}</p>}

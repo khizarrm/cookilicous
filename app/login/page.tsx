@@ -55,7 +55,7 @@ export default function AuthPage() {
           const { error: profileError } = await supabase.from("profiles").insert({
             id: userId,
             phone_number: phone,
-            name: name,
+            full_name: name,
           })
           if (profileError) throw profileError
         }

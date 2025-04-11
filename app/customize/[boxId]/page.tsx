@@ -41,9 +41,10 @@ export default function CustomizeBox() {
   useEffect(() => {
     const fetchCookies = async () => {
       const { data, error } = await supabase
-        .from("cookies")
-        .select("*")
-        .eq("active", true)
+      .from("flavors")
+      .select("*")
+      .eq("is_active", true)
+
 
       if (error) {
         console.error("Failed to fetch cookie flavors:", error)
