@@ -8,6 +8,7 @@ import { ShoppingCart, Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useMobile } from "@/hooks/use-mobile"
 import { LogIn } from "lucide-react"
+import { useAuth } from "@/hooks/useAuth"
 
 
 interface HeaderProps {
@@ -19,6 +20,7 @@ export default function Header({ onCartClick }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { cartItems } = useCart()
   const isMobile = useMobile()
+  const { user, isLoggedIn, logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,11 +72,19 @@ export default function Header({ onCartClick }: HeaderProps) {
 
             {/* Login Button */}
             <div className="hidden md:flex items-center">
-              <Link href="/login" aria-label="Login">
-              <Button variant="ghost">
-                <LogIn className="h-6 w-6 text-pink-600" />
-              </Button>
-            </Link>
+            {isLoggedIn ? (
+              <Link href="/profile">
+                <Button variant="ghost" className="text-pink-600">
+                  Profile
+                </Button>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <Button variant="ghost">
+                  <LogIn className="h-6 w-6 text-pink-600" />
+                </Button>
+              </Link>
+            )}
             </div>
 
           </nav>
