@@ -15,38 +15,60 @@ export default function AuthPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
+  const [name, setName] = useState("") //for name 
+
 
   const handleSubmit = async () => {
     setLoading(true)
     setError(null)
-
-    if (!isLogin && password !== confirmPassword) {
-      setError("Passwords do not match")
-      setLoading(false)
-      return
+  
+    if (!isLogin) {
+      if (!phone) {
+        setError("Phone number is required")
+        setLoading(false)
+        return
+      }
+  
+      if (!password || !confirmPassword) {
+        setError("Please fill in both password fields")
+        setLoading(false)
+        return
+      }
+  
+      if (password !== confirmPassword) {
+        setError("Passwords do not match")
+        setLoading(false)
+        return
+      }
     }
-
-    let result
-    if (isLogin) {
-      result = await supabase.auth.signInWithPassword({ email, password })
-    } else {
-      result = await supabase.auth.signUp({
-        email,
-        password,
-        phone,
-      })
-    }
-
-    const { error } = result
-
-    if (error) {
-      setError(error.message)
-    } else {
+  
+    try {
+      if (isLogin) {
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) throw error
+      } else {
+        const { data, error: signUpError } = await supabase.auth.signUp({ email, password })
+        if (signUpError) throw signUpError
+  
+        const userId = data?.user?.id
+        if (userId) {
+          const { error: profileError } = await supabase.from("profiles").insert({
+            id: userId,
+            phone_number: phone,
+            name: name,
+          })
+          if (profileError) throw profileError
+        }
+      }
+  
       router.push("/")
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
+  
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-pink-50 px-4">
@@ -69,6 +91,15 @@ export default function AuthPage() {
               placeholder="Phone Number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+            />
+          )}
+          
+          {!isLogin && (
+            <Input
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           )}
 
